@@ -17,7 +17,7 @@ type AiClient struct {
 var AiType = map[string]*AiMetadata{
 	"1": {
 		Url:   "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
-		Model: "gemini-1.5-pro",
+		Model: "gemini-2.5-pro",
 	}, // "gemini"
 }
 
@@ -45,7 +45,10 @@ func (c *AiClient) AnalyzeCode(diff string, customPrompt string) (string, error)
 		"- Do not give positive comments or compliments.\n" +
 		"- Provide comments and suggestions ONLY if there is something to improve.\n" +
 		"- Use the given description only for the overall context and only comment the code.\n" +
-		"- IMPORTANT: NEVER suggest adding comments to the code."
+		"- IMPORTANT: NEVER suggest adding comments to the code.\n" +
+		"- Structure your feedback clearly and concisely using the following markdown format: \n" +
+		formatMarkdown
+
 	data := map[string]interface{}{
 		"model": c.Model,
 		"messages": []map[string]string{
@@ -73,17 +76,17 @@ func (c *AiClient) AnalyzeCode(diff string, customPrompt string) (string, error)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("[AnalyzeCode] failed to send request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("API error: %s", resp.Status)
+		return "", fmt.Errorf("[AnalyzeCode] API error: %s", resp.Status)
 	}
 
 	var result map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", err
+		return "", fmt.Errorf("[AnalyzeCode] failed to decode response: %w", err)
 	}
 
 	return c.resolveResponse(result), nil

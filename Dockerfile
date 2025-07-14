@@ -1,5 +1,5 @@
 # Use the official Golang image as a base
-FROM golang:1.23.4-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -14,15 +14,13 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 go build -a -v \
-    -ldflags "-X main.AppVersion=v1.0.0 -X main.BuildSignature=v1.0.0" \
-    -o /app/dist/main .
+RUN CGO_ENABLED=0 go build -a -v -o /app/dist/main .
 
 # Use a minimal Alpine image for the final stage
 FROM alpine:3.17
 
 # Copy the binary from the builder stage
-COPY --from=builder /app/dist/main /usr/local/bin/main
+COPY --from=builder /app/dist/main /usr/local/bin/code-roasting
 
 # Set the entry point
-ENTRYPOINT ["main"]
+ENTRYPOINT ["code-roasting"]
