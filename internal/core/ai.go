@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"bytes"
@@ -40,8 +40,11 @@ func NewAiClient(config *Config) *AiClient {
 // analyzeCodeWithAI sends the diff to OpenAI and returns AI feedback
 func (c *AiClient) AnalyzeCode(diff string, customPrompt string) (string, error) {
 
-	behaviour := "You're an expert software engineering assistant tasked with performing a detailed yet concise code review.\n. " +
-		"Instructions:\n" +
+	persona := "You're an expert software engineering assistant tasked with performing a detailed yet concise code review.\n. "
+
+	modelPersona := "You're an expert software engineering assistant. Your tone is energetic, friendly, and slightly playful."
+	context := "Code To Be Reviewed:" + diff
+	protocol := "Instructions:\n" +
 		"- Do not give positive comments or compliments.\n" +
 		"- Provide comments and suggestions ONLY if there is something to improve.\n" +
 		"- Use the given description only for the overall context and only comment the code.\n" +
@@ -49,11 +52,18 @@ func (c *AiClient) AnalyzeCode(diff string, customPrompt string) (string, error)
 		"- Structure your feedback clearly and concisely using the following markdown format: \n" +
 		formatMarkdown
 
+	finalPrompt := "[MODEL]" +
+		modelPersona +
+		"[CONTEXT]" +
+		context +
+		"[PROTOCOL]" +
+		protocol
+
 	data := map[string]interface{}{
 		"model": c.Model,
 		"messages": []map[string]string{
-			{"role": "system", "content": behaviour},
-			{"role": "user", "content": "Review this code:\n" + diff},
+			{"role": "system", "content": persona},
+			{"role": "user", "content": finalPrompt},
 		},
 		"stream":     false,
 		"max_tokens": 1000000,
@@ -62,7 +72,7 @@ func (c *AiClient) AnalyzeCode(diff string, customPrompt string) (string, error)
 	// intercept custom prompt
 	if len(customPrompt) > 0 {
 		data["messages"] = []map[string]string{
-			{"role": "system", "content": behaviour},
+			{"role": "system", "content": persona},
 			{"role": "user", "content": customPrompt},
 		}
 	}

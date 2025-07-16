@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bot-ai-code-review/internal/core"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -57,7 +58,7 @@ func main() {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			config := &Config{
+			config := &core.Config{
 				GitLabBaseURL:     c.String("gitlab-base-url"),
 				GitlabProjectId:   c.String("gitlab-project-id"),
 				GitlabMrId:        c.Int("gitlab-mr-id"),
@@ -76,7 +77,7 @@ func main() {
 	}
 }
 
-func run(config *Config) error {
+func run(config *core.Config) error {
 	if config.Debug {
 		configBytes, err := json.Marshal(config)
 		if err != nil {
@@ -85,8 +86,8 @@ func run(config *Config) error {
 		log.Printf("Debug config: %v", string(configBytes))
 	}
 
-	gitlab := NewGitlabClient(config)
-	ai := NewAiClient(config)
+	gitlab := core.NewGitlabClient(config)
+	ai := core.NewAiClient(config)
 
 	// Step 1: Fetch open merge requests
 	mrs, err := gitlab.GetOpenMergeRequests()

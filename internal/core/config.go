@@ -1,4 +1,4 @@
-package main
+package core
 
 // Config defines structure of Application configuration
 type Config struct {
