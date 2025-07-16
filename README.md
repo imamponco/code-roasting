@@ -95,3 +95,27 @@ docker run --rm code-roasting \
 | `--ai-api-key`            | `AI_API_KEY`              | AI API key                        |
 | `--ai-custom-prompt`      | `AI_CUSTOM_PROMPT`        | Custom prompt for the AI          |
 | `--debug`                 | `DEBUG`                   | Enable debug mode                 |
+
+## Contributing
+
+Contributions are welcome! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Code of Conduct
+
+We have adopted the Contributor Covenant as our Code of Conduct. Please see the [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html) for more information.
+
+## Contributors
+
+Thanks to all the contributors who have helped make this project better!
+
+<a href="https://github.com/imamponco/code-roasting/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=imamponco/code-roasting"  alt="contributor"/>
+</a>
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
